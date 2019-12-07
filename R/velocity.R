@@ -81,7 +81,7 @@ embed_velocity <- function(
   adata$var_names <- colnames(expression)
   adata$obs_names <- rownames(expression)
 
-  py_assign(adata$layers, "spliced", spliced)
+  py_assign(adata$layers, "spliced", expression)
   py_assign(adata$layers, "velo", velo)
 
   # is necessary internally

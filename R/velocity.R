@@ -10,11 +10,11 @@ add_velocity <- function(
   mode = "stochastic",
   velocity = get_velocity(spliced, unspliced, mode)
 ) {
-  assertthat::assert_that(!is.null(velocity$expression_projected))
+  assertthat::assert_that(!is.null(velocity$expression_future))
 
-  dataset$expression_projected <- velocity$expression_projected
+  dataset$expression_future <- velocity$expression_future
 
-  velocity$expression_projected <- NULL
+  velocity$expression_future <- NULL
   dataset$velocity <- velocity
 
   dynutils::add_class(dataset, "wrapper_with_velocity")
@@ -29,10 +29,17 @@ add_velocity <- function(
 #' @param unspliced Unspliced expression matrix
 #'
 #' @export
-get_velocity <- function(spliced, unspliced, mode = "stochastic") {
+get_velocity <- function(spliced, unspliced, mode = "stochastic", n_neighbors = 20L) {
   assertthat::assert_that(all(dim(spliced) == dim(unspliced)))
   assertthat::assert_that(all(rownames(spliced) == rownames(unspliced)))
   assertthat::assert_that(all(colnames(spliced) == colnames(unspliced)))
+
+  # filter features with not enough counts in either matrix
+  # otherwise scvelo will error quite often (e.g. when calculating the dynamics)
+  # feature_ixs <- which((apply(spliced, 2, sd) > 0) & (apply(unspliced, 2, sd) > 0) & (apply(spliced - unspliced, 2, sum) != 0))
+  feature_ixs <- rep(TRUE, ncol(spliced))
+  spliced <- spliced[, feature_ixs]
+  unspliced <- unspliced[, feature_ixs]
 
   # create anndata object
   velocity = anndata$AnnData(spliced)
@@ -45,79 +52,45 @@ get_velocity <- function(spliced, unspliced, mode = "stochastic") {
   # calculate velocity
   # py_capture_output({ # can't capture output because of https://github.com/rstudio/reticulate/issues/386, otherwise crash when testing
 
-    scvelo$pp$moments(velocity, n_neighbors = 20L)
+    scvelo$pp$moments(velocity, n_neighbors = n_neighbors)
     if (mode == "dynamical") {
+      scvelo$tl$velocity(velocity, mode="deterministic")
+      scvelo$tl$velocity_graph(velocity)
+
       scvelo$tl$recover_dynamics(velocity)
     }
     scvelo$tl$velocity(velocity, mode=mode)
     scvelo$tl$velocity_graph(velocity)
   # })
 
-  # return vecloity object
+  velocity_vector <- velocity$layers[["velocity"]]
+  velocity_vector[is.na(velocity_vector)] <- 0
+  expression_future <- spliced + velocity_vector
+
+  expression_future <- as(expression_future, "dgCMatrix")
+
+  # get transition matrix
+  py$x <- velocity
+  py_run_string("import scvelo")
+  transition_matrix <- py_to_r(py_eval("scvelo.tl.transition_matrix(x).tocsc()"))
+  colnames(transition_matrix) <- rownames(spliced)
+  rownames(transition_matrix) <- rownames(spliced)
+
+  # return velocity object
   tibble::lst(
-    expression_projected = spliced + velocity$layers[["velocity"]],
+    expression_future = expression_future,
+    transition_matrix = transition_matrix,
     scvelo = velocity
   )
 }
 
-#' Embed the velocity within a given dimensionality reduction
-#'
-#' @param dimred The dimensionality reduction
-#' @export
-embed_velocity <- function(
-  dataset,
-  expression = dataset$expression,
-  expression_projected = dataset$expression_projected,
-  dimred = dynwrap::get_dimred(dataset)
-) {
-  assertthat::assert_that(!is.null(expression))
-  assertthat::assert_that(!is.null(expression_projected))
-  assertthat::assert_that(!is.null(dimred))
 
-  # create adata object
-  velo <- as.matrix(expression_projected - expression)
-
-  adata = anndata$AnnData(expression)
-  adata$var_names <- colnames(expression)
-  adata$obs_names <- rownames(expression)
-
-  py_assign(adata$layers, "spliced", expression)
-  py_assign(adata$layers, "velo", velo)
-
-  # is necessary internally
-  adata$uns[["velo_settings"]] <- list(mode = "deterministic")
-
-  # assign dimred
-  py_assign(adata$obsm, "X_dimred", as.matrix(dimred))
-
-  # embed velocity
-  scvelo$tl$velocity_graph(adata, vkey = "velo")
-  scvelo$tl$velocity_embedding(adata, vkey = "velo", basis = "dimred")
-
-  # assign dimred and embed
-  py_assign(adata$obsm, "X_dimred", dimred)
-  scvelo$tl$velocity_embedding(adata, basis = "dimred", vkey = "velo")
-
-  dimred_projected <- dimred + adata$obsm[["velo_dimred"]]
-  dimnames(dimred_projected) <- dimnames(dimred)
-
-  # replace the ocasional NA dimred position
-  dimred_projected[is.na(dimred_projected)] <- dimred[is.na(dimred_projected)]
-
-  dimred_projected
-}
-
-
-
-# embed the velocity directly using an scvelo anndata object, instead of recreating one
-embed_velocity_scvelo <- function(adata, dimred) {
-  py_assign(adata$obsm, "X_dimred", dimred)
-  scvelo$tl$velocity_embedding(adata, "dimred")
-  dimred_projected <- dimred + adata$obsm[["velocity_dimred"]]
-  dimnames(dimred_projected) <- dimnames(dimred)
-
-  # replace the ocasional NA dimred position
-  dimred_projected[is.na(dimred_projected)] <- dimred[is.na(dimred_projected)]
-
-  dimred_projected
+check_scvelo <- function(scvelo) {
+  if(is.null(scvelo)) {
+    FALSE
+  } else if(as.character(scvelo) == "<pointer: 0x0>") {
+    FALSE
+  } else {
+    TRUE
+  }
 }

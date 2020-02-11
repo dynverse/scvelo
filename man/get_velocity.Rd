@@ -4,7 +4,7 @@
 \alias{get_velocity}
 \title{Calculate velocity}
 \usage{
-get_velocity(spliced, unspliced)
+get_velocity(spliced, unspliced, mode = "stochastic", n_neighbors = 20L)
 }
 \arguments{
 \item{spliced}{Spliced expression matrix}

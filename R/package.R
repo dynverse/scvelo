@@ -1,9 +1,11 @@
 #' Wrapper for the awesome scvelo package
 #'
 #' @import reticulate
+#' @importFrom assertthat assert_that
+#' @importFrom purrr map pmap_dbl
 #'
 #' @docType package
-#' @name reticulate
+#' @name scelo
 NULL
 
 # global reference to scipy (will be initialized in .onLoad)

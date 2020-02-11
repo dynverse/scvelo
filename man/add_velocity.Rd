@@ -4,11 +4,16 @@
 \alias{add_velocity}
 \title{Add velocity to a dynwrap dataset}
 \usage{
-add_velocity(dataset, spliced = dataset$expression,
-  unspliced = dataset$expression_unspliced)
+add_velocity(
+  dataset,
+  spliced = dataset$expression,
+  unspliced = dataset$expression_unspliced,
+  mode = "stochastic",
+  velocity = get_velocity(spliced, unspliced, mode)
+)
 }
 \arguments{
-\item{dataset}{A dataset created by \code{\link[=wrap_data]{wrap_data()}} or \code{\link[=wrap_expression]{wrap_expression()}}}
+\item{dataset}{A dataset created by \code{\link[dynwrap:wrap_data]{wrap_data()}} or \code{\link[dynwrap:wrap_expression]{wrap_expression()}}}
 }
 \description{
 Add velocity to a dynwrap dataset

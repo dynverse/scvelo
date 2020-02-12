@@ -80,7 +80,8 @@ get_velocity <- function(spliced, unspliced, mode = "stochastic", n_neighbors = 
   )
 }
 
-# Checks if the scvelo objecet is still present
+# Checks if the scvelo object is still present
+# this is not the case after saving the R object as an rds
 check_scvelo <- function(scvelo) {
   if(is.null(scvelo)) {
     FALSE

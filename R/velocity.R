@@ -34,12 +34,8 @@ get_velocity <- function(spliced, unspliced, mode = "stochastic", n_neighbors = 
   assertthat::assert_that(all(rownames(spliced) == rownames(unspliced)))
   assertthat::assert_that(all(colnames(spliced) == colnames(unspliced)))
 
-  # filter features with not enough counts in either matrix
-  # otherwise scvelo will error quite often (e.g. when calculating the dynamics)
-  # feature_ixs <- which((apply(spliced, 2, sd) > 0) & (apply(unspliced, 2, sd) > 0) & (apply(spliced - unspliced, 2, sum) != 0))
-  feature_ixs <- rep(TRUE, ncol(spliced))
-  spliced <- spliced[, feature_ixs]
-  unspliced <- unspliced[, feature_ixs]
+  spliced <- spliced
+  unspliced <- unspliced
 
   # create anndata object
   velocity = anndata$AnnData(spliced)
@@ -84,7 +80,7 @@ get_velocity <- function(spliced, unspliced, mode = "stochastic", n_neighbors = 
   )
 }
 
-
+# Checks if the scvelo objecet is still present
 check_scvelo <- function(scvelo) {
   if(is.null(scvelo)) {
     FALSE

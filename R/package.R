@@ -18,6 +18,10 @@ anndata <- NULL
   scvelo <<- import("scvelo", delay_load = TRUE)
   scanpy <<- import("scanpy", delay_load = TRUE)
   anndata <<- import("anndata", delay_load = TRUE)
+
+  if(!py_module_available("scvelo")) {
+    message("The scvelo python package is not installed, install it using `scvelo::install_scvelo()`")
+  }
 }
 
 

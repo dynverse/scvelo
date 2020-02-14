@@ -8,6 +8,10 @@ add_dimred_future <- function(
   expression = dataset$expression,
   expression_future = dataset$expression_future
 ) {
+  assert_that(!is.null(dimred), msg = "Add a dimred to the dataset before adding dimred_futre")
+  assert_that(!is.null(expression))
+  assert_that(!is.null(expression_future))
+
   dataset$dimred_future <- embed_velocity(
     dataset,
     dimred = dimred,

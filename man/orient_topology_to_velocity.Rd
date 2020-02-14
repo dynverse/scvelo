@@ -6,12 +6,16 @@
 \usage{
 orient_topology_to_velocity(
   trajectory,
-  expression = trajectory$expression,
-  expression_future = trajectory$expression_future
+  velocity = trajectory$velocity,
+  expression_source = trajectory,
+  expression = dynwrap::get_expression(expression_source, "expression"),
+  expression_future = dynwrap::get_expression(expression_source, "expression_future")
 )
 }
 \arguments{
 \item{trajectory}{The trajectory as created by \code{\link[dynwrap:infer_trajectory]{infer_trajectory()}} or \code{\link[dynwrap:add_trajectory]{add_trajectory()}}}
+
+\item{expression_source}{The source of expression, can be "counts", "expression", an expression matrix, or another dataset which contains expression}
 
 \item{expression}{The normalised expression values of genes (columns) within cells (rows). This can be both a dense and sparse matrix.}
 

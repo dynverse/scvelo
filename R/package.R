@@ -1,6 +1,7 @@
 #' Wrapper for the awesome scvelo package
 #'
 #' @import reticulate
+#' @import assertthat
 #' @importFrom assertthat assert_that
 #' @importFrom purrr map pmap_dbl
 #'

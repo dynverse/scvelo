@@ -1,15 +1,31 @@
 Package: scvelo
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Title: An R wrapper around the great "scvelo" python package
+Version: 0.1.0.9000
+Authors@R: c(
+    person(
+      "Robrecht", 
+      "Cannoodt", 
+      email = "rcannood@gmail.com", 
+      role = c("aut"),
+      comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")
+    ),
+    person(
+      "Wouter", 
+      "Saelens", 
+      email = "wouter.saelens@ugent.be", 
+      role = c("aut", "cre"), 
+      comment = c(ORCID = "0000-0002-7114-6248", github = "zouter")
+    )
+  )
+URL: https://github.com/dynverse/scvelo
+BugReports: https://github.com/dynverse/scvelo/issues
+Description: "scvelo" allows you to estimate velocity vectors for each cell and gene in a single-cell expression dataset.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
+  assertthat,
   reticulate
 Suggests: 
     testthat (>= 2.1.0)

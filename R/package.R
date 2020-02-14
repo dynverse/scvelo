@@ -26,5 +26,6 @@ anndata <- NULL
 
 
 install_scvelo <- function(method = "auto", conda = "auto") {
-  py_install("scvelo", method = method, conda = conda)
+  message("Installing scvelo through bioconda currently does not work, will install scvelo using pip")
+  py_install("scvelo", method = "pip")
 }

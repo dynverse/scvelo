@@ -2,9 +2,17 @@
 % Please edit documentation in R/dimred.R
 \name{add_dimred_future}
 \alias{add_dimred_future}
+\alias{embed_velocity}
 \title{Add the future dimensionality reduction based on RNA velocity information, using the existing dimensionality reduction}
 \usage{
 add_dimred_future(
+  dataset,
+  dimred = dynwrap::get_dimred(dataset),
+  expression = dataset$expression,
+  expression_future = dataset$expression_future
+)
+
+embed_velocity(
   dataset,
   dimred = dynwrap::get_dimred(dataset),
   expression = dataset$expression,

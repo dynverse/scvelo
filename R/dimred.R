@@ -22,6 +22,9 @@ add_dimred_future <- function(
   dataset
 }
 
+
+#' @rdname add_dimred_future
+#' @export
 embed_velocity <- function(
   dataset,
   dimred = dynwrap::get_dimred(dataset),

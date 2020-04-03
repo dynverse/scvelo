@@ -2,6 +2,7 @@
 
 export(add_dimred_future)
 export(add_velocity)
+export(embed_velocity)
 export(get_velocity)
 export(orient_topology_to_velocity)
 import(assertthat)

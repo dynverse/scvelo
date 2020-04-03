@@ -25,11 +25,14 @@ anndata <- NULL
 
 .onAttach <- function(libname, pkgname) {
   if (!py_module_available("scvelo")) {
-    packageStartupMessage("The scvelo python package is not installed, install it using `scvelo::install_scvelo()`")
+    packageStartupMessage("The scvelo python package is not installed. Install it using `scvelo::install_scvelo()`")
+  } else if (scvelo$`__version__` < "0.1.26") {
+    packageStartupMessage("The scvelo python package should be >= 0.1.26. Install the scvelo from Github using `scvelo::install_scvelo()`")
   }
 }
 
 install_scvelo <- function(method = "auto", conda = "auto") {
-  message("Installing scvelo through bioconda currently does not work, will install scvelo using pip")
-  py_install("scvelo", method = "pip")
+  message("Installing scvelo through bioconda currently does not work, will install scvelo from Github using pip.")
+  # py_install("scvelo", method = "pip")
+  reticulate::py_install(packages = "git+https://github.com/theislab/scvelo.git", pip = TRUE)
 }

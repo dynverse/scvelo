@@ -30,9 +30,11 @@ add_velocity <- function(
 #'
 #' @export
 get_velocity <- function(spliced, unspliced, mode = "stochastic", n_neighbors = 20L) {
-  assertthat::assert_that(all(dim(spliced) == dim(unspliced)))
-  assertthat::assert_that(all(rownames(spliced) == rownames(unspliced)))
-  assertthat::assert_that(all(colnames(spliced) == colnames(unspliced)))
+  assert_that(
+    all(dim(spliced) == dim(unspliced)),
+    all(rownames(spliced) == rownames(unspliced)),
+    all(colnames(spliced) == colnames(unspliced))
+  )
 
   spliced <- spliced
   unspliced <- unspliced

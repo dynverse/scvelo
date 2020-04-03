@@ -8,7 +8,9 @@ get_velocity(
   spliced,
   unspliced,
   mode = c("stochastic", "deterministic", "dynamical"),
-  n_neighbors = 20L
+  n_neighbors = 20L,
+  var_names = "velocity_genes",
+  layer = "spliced"
 )
 }
 \arguments{
@@ -20,6 +22,8 @@ get_velocity(
 of transcriptional dynamics.}
 
 \item{n_neighbors}{Number of neighbors to use.}
+
+\item{var_names}{Names of variables/genes to use for the fitting. Can be `"velocity_genes"`, `"all"`, or a set of gene names.}
 }
 \description{
 Calculate velocity

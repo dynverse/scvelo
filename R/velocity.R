@@ -32,6 +32,7 @@ add_velocity <- function(
 #'
 #' @param spliced Spliced expression matrix
 #' @param unspliced Unspliced expression matrix
+#' @param var_names Names of variables/genes to use for the fitting. Can be `"velocity_genes"`, `"all"`, or a set of gene names.
 #' @param mode Whether to run the estimation using the deterministic or stochastic model
 #'  of transcriptional dynamics.
 #' @param n_neighbors Number of neighbors to use.
@@ -43,7 +44,9 @@ get_velocity <- function(
   spliced,
   unspliced,
   mode = c("stochastic", "deterministic", "dynamical"),
-  n_neighbors = 20L
+  n_neighbors = 20L,
+  var_names = "velocity_genes",
+  layer = "spliced"
 ) {
   # check inputs
   mode <- match.arg(mode)
@@ -70,15 +73,23 @@ get_velocity <- function(
       scvelo$tl$velocity(velocity, mode = "deterministic")
       scvelo$tl$velocity_graph(velocity)
 
-      scvelo$tl$recover_dynamics(velocity)
+      scvelo$tl$recover_dynamics(velocity, var_names = var_names)
     }
     scvelo$tl$velocity(velocity, mode = mode)
     scvelo$tl$velocity_graph(velocity)
   # })
 
+
   velocity_vector <- velocity$layers[["velocity"]]
   velocity_vector[is.na(velocity_vector)] <- 0
-  expression_future <- spliced + velocity_vector
+
+  if (layer == "imputed") {
+    imputed <- velocity$layers[["Ms"]]
+    expression_future <- imputed + velocity_vector
+    dimnames(expression_future) <- dimnames(spliced)
+  } else {
+    expression_future <- spliced + velocity_vector
+  }
 
   expression_future <- as(expression_future, "dgCMatrix")
 

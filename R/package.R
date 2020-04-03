@@ -26,8 +26,11 @@ anndata <- NULL
 .onAttach <- function(libname, pkgname) {
   if (!py_module_available("scvelo")) {
     packageStartupMessage("The scvelo python package is not installed. Install it using `scvelo::install_scvelo()`")
-  } else if (scvelo$`__version__` < "0.1.26") {
-    packageStartupMessage("The scvelo python package should be >= 0.1.26. Install the scvelo from Github using `scvelo::install_scvelo()`")
+  } else {
+    vers <- package_version(gsub("\\.dev.*", "", scvelo$`__version__`))
+    if (vers < "0.1.26") {
+      packageStartupMessage("The scvelo python package should be >= 0.1.26. Install the scvelo from Github using `scvelo::install_scvelo()`")
+    }
   }
 }
 

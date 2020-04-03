@@ -4,12 +4,22 @@
 \alias{get_velocity}
 \title{Calculate velocity}
 \usage{
-get_velocity(spliced, unspliced, mode = "stochastic", n_neighbors = 20L)
+get_velocity(
+  spliced,
+  unspliced,
+  mode = c("stochastic", "deterministic", "dynamical"),
+  n_neighbors = 20L
+)
 }
 \arguments{
 \item{spliced}{Spliced expression matrix}
 
 \item{unspliced}{Unspliced expression matrix}
+
+\item{mode}{Whether to run the estimation using the deterministic or stochastic model
+of transcriptional dynamics.}
+
+\item{n_neighbors}{Number of neighbors to use.}
 }
 \description{
 Calculate velocity

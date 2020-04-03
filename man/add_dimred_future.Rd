@@ -20,7 +20,17 @@ embed_velocity(
 )
 }
 \arguments{
-\item{dimred}{The dimensionality reduction}
+\item{dataset}{A dataset created by \code{\link[dynwrap:wrap_data]{wrap_data()}} or \code{\link[dynwrap:wrap_expression]{wrap_expression()}}}
+
+\item{dimred}{Can be
+\itemize{
+\item A function which will perform the dimensionality reduction, see \code{\link[dyndimred:dimred]{dyndimred::list_dimred_methods()}}
+\item A matrix with the dimensionality reduction, with cells in rows and dimensions (\emph{comp_1}, \emph{comp_2}, ...) in columns
+}}
+
+\item{expression}{The normalised expression values of genes (columns) within cells (rows). This can be both a dense and sparse matrix.}
+
+\item{expression_future}{Projected expression using RNA velocity of genes (columns) within cells (rows).  This can be both a dense and sparse matrix.}
 }
 \description{
 Add the future dimensionality reduction based on RNA velocity information, using the existing dimensionality reduction

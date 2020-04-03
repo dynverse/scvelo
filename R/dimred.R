@@ -1,6 +1,10 @@
 #' Add the future dimensionality reduction based on RNA velocity information, using the existing dimensionality reduction
 #'
-#' @param dimred The dimensionality reduction
+#' @inheritParams dynwrap::add_expression
+#' @inheritParams dynwrap::add_dimred
+#'
+#' @importFrom digest digest
+#'
 #' @export
 add_dimred_future <- function(
   dataset,
@@ -8,9 +12,11 @@ add_dimred_future <- function(
   expression = dataset$expression,
   expression_future = dataset$expression_future
 ) {
-  assert_that(!is.null(dimred), msg = "Add a dimred to the dataset before adding dimred_futre")
-  assert_that(!is.null(expression))
-  assert_that(!is.null(expression_future))
+  assert_that(!is.null(dimred), msg = "Add a dimred to the dataset before adding dimred_future")
+  assert_that(
+    !is.null(expression),
+    !is.null(expression_future)
+  )
 
   dataset$dimred_future <- embed_velocity(
     dataset,
@@ -31,7 +37,7 @@ embed_velocity <- function(
   expression = dataset$expression,
   expression_future = dataset$expression_future
 ) {
-  if(check_scvelo(dataset$velocity$scvelo)) {
+  if (check_scvelo(dataset$velocity$scvelo)) {
     dimred_future <- embed_velocity_scvelo(
       dataset$velocity$scvelo,
       dimred = dimred

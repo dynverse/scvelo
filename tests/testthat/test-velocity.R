@@ -1,3 +1,5 @@
+context("testing velocity.R")
+
 test_that("velocity can be calculated", {
   set.seed(1)
   unspliced <- Matrix::rsparsematrix(50, 500, 1, rand.x = runif)
@@ -7,5 +9,5 @@ test_that("velocity can be calculated", {
 
   velocity <- get_velocity(spliced, unspliced)
 
-  expect_is(velocity$scvelo, "anndata.core.anndata.AnnData")
+  expect_is(velocity$scvelo, "anndata._core.anndata.AnnData")
 })

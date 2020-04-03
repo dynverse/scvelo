@@ -1,3 +1,5 @@
+context("testing get.R")
+
 set.seed(1)
 unspliced <- Matrix::rsparsematrix(50, 100, 0.5, rand.x = runif)
 dimnames(unspliced) <- list(paste0('A', seq_len(nrow(unspliced))), paste0('B', seq_len(ncol(unspliced))))

@@ -10,19 +10,19 @@ add_dimred_future <- function(
   dataset,
   dimred = dynwrap::get_dimred(dataset),
   expression = dataset$expression,
-  expression_future = dataset$expression_future
+  velocity_vector = dataset$velocity_vector
 ) {
   assert_that(!is.null(dimred), msg = "Add a dimred to the dataset before adding dimred_future")
   assert_that(
     !is.null(expression),
-    !is.null(expression_future)
+    !is.null(velocity_vector)
   )
 
   dataset$dimred_future <- embed_velocity(
     dataset,
     dimred = dimred,
     expression = expression,
-    expression_future = expression_future
+    velocity_vector = velocity_vector
   )
   attr(dataset$dimred_future, "dimred_digest") <- digest::digest(dimred, algo = "md5")
   dataset
@@ -35,7 +35,7 @@ embed_velocity <- function(
   dataset,
   dimred = dynwrap::get_dimred(dataset),
   expression = dataset$expression,
-  expression_future = dataset$expression_future
+  velocity_vector = dataset$velocity_vector
 ) {
   if (check_scvelo(dataset$velocity$scvelo)) {
     dimred_future <- embed_velocity_scvelo(
@@ -47,7 +47,7 @@ embed_velocity <- function(
       dataset,
       dimred = dimred,
       expression = expression,
-      expression_future = expression_future
+      velocity_vector = velocity_vector
     )
   }
 
@@ -59,14 +59,14 @@ embed_velocity_new <- function(
   dataset,
   dimred = dynwrap::get_dimred(dataset),
   expression = dataset$expression,
-  expression_future = dataset$expression_future
+  velocity_vector = dataset$velocity_vector
 ) {
   assertthat::assert_that(!is.null(expression))
-  assertthat::assert_that(!is.null(expression_future))
+  assertthat::assert_that(!is.null(velocity_vector))
   assertthat::assert_that(!is.null(dimred))
 
   # create adata object
-  velo <- as.matrix(expression_future - expression)
+  velo <- as.matrix(velocity_vector)
 
   adata = anndata$AnnData(expression)
   adata$var_names <- colnames(expression)

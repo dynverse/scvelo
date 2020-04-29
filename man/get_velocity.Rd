@@ -7,19 +7,15 @@
 get_velocity(
   spliced,
   unspliced,
-  mode = c("stochastic", "deterministic", "dynamical"),
+  mode = c("stochastic", "deterministic", "dynamical", "dynamical_residuals"),
   n_neighbors = 20L,
-  var_names = "velocity_genes",
-  layer = "spliced"
+  var_names = "velocity_genes"
 )
 }
 \arguments{
 \item{spliced}{Spliced expression matrix}
 
 \item{unspliced}{Unspliced expression matrix}
-
-\item{mode}{Whether to run the estimation using the deterministic or stochastic model
-of transcriptional dynamics.}
 
 \item{n_neighbors}{Number of neighbors to use.}
 

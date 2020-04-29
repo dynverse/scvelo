@@ -66,13 +66,13 @@ orient_topology_to_velocity <- function(
   velocity = trajectory$velocity,
   expression_source = trajectory,
   expression = dynwrap::get_expression(expression_source, "expression"),
-  expression_future = dynwrap::get_expression(expression_source, "expression_future")
+  velocity_vector = dynwrap::get_expression(expression_source, "velocity_vector")
 ) {
   # dummy proofing
   assert_that(
     is(trajectory, "dynwrap::with_trajectory"),
     !is.null(expression),
-    !is.null(expression_future)
+    !is.null(velocity_vector)
   )
 
   if (nrow(trajectory$divergence_regions)) {

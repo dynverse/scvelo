@@ -16,10 +16,10 @@ add_velocity <- function(
   velocity = get_velocity(spliced = spliced, unspliced = unspliced, mode = mode, n_neighbors = n_neighbors)
 ) {
   mode <- match.arg(mode)
-  assert_that(!is.null(velocity$expression_future))
+  assert_that(!is.null(velocity$velocity))
 
-  dataset$expression_future <- velocity$expression_future
-  velocity$expression_future <- NULL
+  dataset$velocity_vector <- velocity$velocity_vector
+  velocity$velocity_vector <- NULL
   dataset$velocity <- velocity
 
   dynutils::add_class(dataset, "wrapper_with_velocity")
@@ -33,8 +33,6 @@ add_velocity <- function(
 #' @param spliced Spliced expression matrix
 #' @param unspliced Unspliced expression matrix
 #' @param var_names Names of variables/genes to use for the fitting. Can be `"velocity_genes"`, `"all"`, or a set of gene names.
-#' @param mode Whether to run the estimation using the deterministic or stochastic model
-#'  of transcriptional dynamics.
 #' @param n_neighbors Number of neighbors to use.
 #'
 #' @importFrom methods as
@@ -43,10 +41,9 @@ add_velocity <- function(
 get_velocity <- function(
   spliced,
   unspliced,
-  mode = c("stochastic", "deterministic", "dynamical"),
+  mode = c("stochastic", "deterministic", "dynamical", "dynamical_residuals"),
   n_neighbors = 20L,
-  var_names = "velocity_genes",
-  layer = "spliced"
+  var_names = "velocity_genes"
 ) {
   # check inputs
   mode <- match.arg(mode)
@@ -69,9 +66,10 @@ get_velocity <- function(
 
     scvelo$pp$moments(velocity, n_neighbors = n_neighbors)
 
-    if (mode == "dynamical") {
-      scvelo$tl$velocity(velocity, mode = "deterministic")
-      scvelo$tl$velocity_graph(velocity)
+    if (mode %in% c("dynamical", "dynamical_residuals")) {
+      # these two lines are apparently not needed anymore:
+      # scvelo$tl$velocity(velocity, mode = "deterministic")
+      # scvelo$tl$velocity_graph(velocity)
 
       scvelo$tl$recover_dynamics(velocity, var_names = var_names)
     }
@@ -79,19 +77,12 @@ get_velocity <- function(
     scvelo$tl$velocity_graph(velocity)
   # })
 
-
   velocity_vector <- velocity$layers[["velocity"]]
   velocity_vector[is.na(velocity_vector)] <- 0
 
-  if (layer == "imputed") {
-    imputed <- velocity$layers[["Ms"]]
-    expression_future <- imputed + velocity_vector
-    dimnames(expression_future) <- dimnames(spliced)
-  } else {
-    expression_future <- spliced + velocity_vector
-  }
+  dimnames(velocity_vector) <- dimnames(spliced)
 
-  expression_future <- as(expression_future, "dgCMatrix")
+  velocity_vector <- as(velocity_vector, "dgCMatrix")
 
   # get transition matrix
   py$x <- velocity
@@ -102,7 +93,7 @@ get_velocity <- function(
 
   # return velocity object
   list(
-    expression_future = expression_future,
+    velocity_vector = velocity_vector,
     transition_matrix = transition_matrix,
     scvelo = velocity
   )

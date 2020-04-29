@@ -9,14 +9,14 @@ add_dimred_future(
   dataset,
   dimred = dynwrap::get_dimred(dataset),
   expression = dataset$expression,
-  expression_future = dataset$expression_future
+  velocity_vector = dataset$velocity_vector
 )
 
 embed_velocity(
   dataset,
   dimred = dynwrap::get_dimred(dataset),
   expression = dataset$expression,
-  expression_future = dataset$expression_future
+  velocity_vector = dataset$velocity_vector
 )
 }
 \arguments{
@@ -29,8 +29,6 @@ embed_velocity(
 }}
 
 \item{expression}{The normalised expression values of genes (columns) within cells (rows). This can be both a dense and sparse matrix.}
-
-\item{expression_future}{Projected expression using RNA velocity of genes (columns) within cells (rows).  This can be both a dense and sparse matrix.}
 }
 \description{
 Add the future dimensionality reduction based on RNA velocity information, using the existing dimensionality reduction

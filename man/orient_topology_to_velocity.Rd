@@ -9,7 +9,7 @@ orient_topology_to_velocity(
   velocity = trajectory$velocity,
   expression_source = trajectory,
   expression = dynwrap::get_expression(expression_source, "expression"),
-  expression_future = dynwrap::get_expression(expression_source, "expression_future")
+  velocity_vector = dynwrap::get_expression(expression_source, "velocity_vector")
 )
 }
 \arguments{
@@ -20,8 +20,6 @@ orient_topology_to_velocity(
 \item{expression_source}{The source of expression, can be "counts", "expression", an expression matrix, or another dataset which contains expression}
 
 \item{expression}{The normalised expression values of genes (columns) within cells (rows). This can be both a dense and sparse matrix.}
-
-\item{expression_future}{Projected expression using RNA velocity of genes (columns) within cells (rows).  This can be both a dense and sparse matrix.}
 }
 \value{
 The trajectory with oriented *milestone_network* and *progressions*

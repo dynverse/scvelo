@@ -53,31 +53,28 @@ get_velocity <- function(
     all(colnames(spliced) == colnames(unspliced))
   )
 
+  # let scvelo do its own normalisation
+  spliced <- as(2^spliced-1, "dgCMatrix")
+  unspliced <- as(2^unspliced-1, "dgCMatrix")
+
   # create anndata object
-  velocity <- anndata$AnnData(spliced)
-  velocity$var_names <- colnames(spliced)
-  velocity$obs_names <- rownames(spliced)
+  adata <- anndata$AnnData(spliced)
+  adata$var_names <- colnames(spliced)
+  adata$obs_names <- rownames(spliced)
 
-  py_assign(velocity$layers, "spliced", spliced)
-  py_assign(velocity$layers, "unspliced", unspliced)
+  py_assign(adata$layers, "spliced", spliced)
+  py_assign(adata$layers, "unspliced", unspliced)
 
-  # calculate velocity
-  # py_capture_output({ # can't capture output because of https://github.com/rstudio/reticulate/issues/386, otherwise crash when testing
+  scvelo$pp$filter_and_normalize(adata)
+  scvelo$pp$moments(adata, n_neighbors = n_neighbors)
 
-    scvelo$pp$moments(velocity, n_neighbors = n_neighbors)
+  if (mode %in% c("dynamical", "dynamical_residuals")) {
+    scvelo$tl$recover_dynamics(adata, var_names = var_names)
+  }
+  scvelo$tl$velocity(adata, mode = mode)
+  scvelo$tl$velocity_graph(adata)
 
-    if (mode %in% c("dynamical", "dynamical_residuals")) {
-      # these two lines are apparently not needed anymore:
-      # scvelo$tl$velocity(velocity, mode = "deterministic")
-      # scvelo$tl$velocity_graph(velocity)
-
-      scvelo$tl$recover_dynamics(velocity, var_names = var_names)
-    }
-    scvelo$tl$velocity(velocity, mode = mode)
-    scvelo$tl$velocity_graph(velocity)
-  # })
-
-  velocity_vector <- velocity$layers[["velocity"]]
+  velocity_vector <- adata$layers[["velocity"]]
   velocity_vector[is.na(velocity_vector)] <- 0
 
   dimnames(velocity_vector) <- dimnames(spliced)
@@ -85,7 +82,7 @@ get_velocity <- function(
   velocity_vector <- as(velocity_vector, "dgCMatrix")
 
   # get transition matrix
-  py$x <- velocity
+  py$x <- adata
   py_run_string("import scvelo")
   transition_matrix <- py_to_r(py_eval("scvelo.tl.transition_matrix(x).tocsc()"))
   colnames(transition_matrix) <- rownames(spliced)

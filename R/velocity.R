@@ -92,7 +92,7 @@ get_velocity <- function(
   list(
     velocity_vector = velocity_vector,
     transition_matrix = transition_matrix,
-    scvelo = velocity
+    scvelo = adata
   )
 }
 

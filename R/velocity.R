@@ -30,8 +30,8 @@ add_velocity <- function(
 
 #' Calculate velocity
 #'
-#' @param spliced Spliced expression matrix
-#' @param unspliced Unspliced expression matrix
+#' @param spliced Spliced count matrix
+#' @param unspliced Unspliced count matrix, same dimensions as `spliced`
 #' @param var_names Names of variables/genes to use for the fitting. Can be `"velocity_genes"`, `"all"`, or a set of gene names.
 #' @param n_neighbors Number of neighbors to use.
 #'
@@ -60,6 +60,9 @@ get_velocity <- function(
 
   py_assign(velocity$layers, "spliced", spliced)
   py_assign(velocity$layers, "unspliced", unspliced)
+
+  scvelo$pp$normalize_per_cell(velocity)
+  scvelo$pp$log1p(velocity)
 
   # calculate velocity
   # py_capture_output({ # can't capture output because of https://github.com/rstudio/reticulate/issues/386, otherwise crash when testing

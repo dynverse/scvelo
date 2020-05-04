@@ -9,15 +9,18 @@ get_velocity(
   unspliced,
   mode = c("stochastic", "deterministic", "dynamical", "dynamical_residuals"),
   n_neighbors = 20L,
+  n_pcs = 20L,
   var_names = "velocity_genes"
 )
 }
 \arguments{
-\item{spliced}{Spliced expression matrix}
+\item{spliced}{Spliced count matrix}
 
-\item{unspliced}{Unspliced expression matrix}
+\item{unspliced}{Unspliced count matrix, same dimensions as `spliced`}
 
 \item{n_neighbors}{Number of neighbors to use.}
+
+\item{n_pcs}{Number of principal components to use.}
 
 \item{var_names}{Names of variables/genes to use for the fitting. Can be `"velocity_genes"`, `"all"`, or a set of gene names.}
 }

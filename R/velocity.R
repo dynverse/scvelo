@@ -34,6 +34,7 @@ add_velocity <- function(
 #' @param unspliced Unspliced count matrix, same dimensions as `spliced`
 #' @param var_names Names of variables/genes to use for the fitting. Can be `"velocity_genes"`, `"all"`, or a set of gene names.
 #' @param n_neighbors Number of neighbors to use.
+#' @param n_pcs Number of principal components to use.
 #'
 #' @importFrom methods as
 #'
@@ -43,6 +44,7 @@ get_velocity <- function(
   unspliced,
   mode = c("stochastic", "deterministic", "dynamical", "dynamical_residuals"),
   n_neighbors = 20L,
+  n_pcs = 20L,
   var_names = "velocity_genes"
 ) {
   # check inputs
@@ -67,7 +69,7 @@ get_velocity <- function(
   # calculate velocity
   # py_capture_output({ # can't capture output because of https://github.com/rstudio/reticulate/issues/386, otherwise crash when testing
 
-    scvelo$pp$moments(velocity, n_neighbors = n_neighbors)
+    scvelo$pp$moments(velocity, n_neighbors = n_neighbors, n_pcs = n_pcs)
 
     if (mode %in% c("dynamical", "dynamical_residuals")) {
       # these two lines are apparently not needed anymore:

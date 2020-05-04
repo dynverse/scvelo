@@ -17,9 +17,9 @@ add_velocity(
 \arguments{
 \item{dataset}{A dataset created by \code{\link[dynwrap:wrap_data]{wrap_data()}} or \code{\link[dynwrap:wrap_expression]{wrap_expression()}}}
 
-\item{spliced}{Spliced expression matrix}
+\item{spliced}{Spliced count matrix}
 
-\item{unspliced}{Unspliced expression matrix}
+\item{unspliced}{Unspliced count matrix, same dimensions as `spliced`}
 
 \item{n_neighbors}{Number of neighbors to use.}
 

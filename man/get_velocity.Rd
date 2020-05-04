@@ -13,9 +13,9 @@ get_velocity(
 )
 }
 \arguments{
-\item{spliced}{Spliced expression matrix}
+\item{spliced}{Spliced count matrix}
 
-\item{unspliced}{Unspliced expression matrix}
+\item{unspliced}{Unspliced count matrix, same dimensions as `spliced`}
 
 \item{n_neighbors}{Number of neighbors to use.}
 

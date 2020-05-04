@@ -70,10 +70,6 @@ get_velocity <- function(
     scvelo$pp$moments(velocity, n_neighbors = n_neighbors)
 
     if (mode %in% c("dynamical", "dynamical_residuals")) {
-      # these two lines are apparently not needed anymore:
-      # scvelo$tl$velocity(velocity, mode = "deterministic")
-      # scvelo$tl$velocity_graph(velocity)
-
       scvelo$tl$recover_dynamics(velocity, var_names = var_names)
     }
     scvelo$tl$velocity(velocity, mode = mode)
@@ -82,9 +78,7 @@ get_velocity <- function(
 
   velocity_vector <- velocity$layers[["velocity"]]
   velocity_vector[is.na(velocity_vector)] <- 0
-
   dimnames(velocity_vector) <- dimnames(spliced)
-
   velocity_vector <- as(velocity_vector, "dgCMatrix")
 
   # get transition matrix

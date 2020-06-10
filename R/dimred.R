@@ -61,9 +61,11 @@ embed_velocity_new <- function(
   expression = dataset$expression,
   velocity_vector = dataset$velocity_vector
 ) {
-  assertthat::assert_that(!is.null(expression))
-  assertthat::assert_that(!is.null(velocity_vector))
-  assertthat::assert_that(!is.null(dimred))
+  assert_that(
+    !is.null(expression),
+    !is.null(velocity_vector),
+    !is.null(dimred)
+  )
 
   # create adata object
   velo <- as.matrix(velocity_vector)

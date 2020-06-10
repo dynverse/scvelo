@@ -15,12 +15,16 @@ NULL
 scvelo <- NULL
 scanpy <- NULL
 anndata <- NULL
-
+matplotlib <- NULL
 .onLoad <- function(libname, pkgname) {
   # use superassignment to update global reference to scipy
   scvelo <<- import("scvelo", delay_load = TRUE)
   scanpy <<- import("scanpy", delay_load = TRUE)
   anndata <<- import("anndata", delay_load = TRUE)
+
+  # avoid crash
+  matplotlib <- import("matplotlib")
+  matplotlib$use('Agg')
 }
 
 .onAttach <- function(libname, pkgname) {

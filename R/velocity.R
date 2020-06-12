@@ -60,8 +60,8 @@ get_velocity <- function(
   velocity$var_names <- colnames(spliced)
   velocity$obs_names <- rownames(spliced)
 
-  py_assign(velocity$layers, "spliced", spliced)
-  py_assign(velocity$layers, "unspliced", unspliced)
+  py_set_item(velocity$layers, "spliced", spliced)
+  py_set_item(velocity$layers, "unspliced", unspliced)
 
   scvelo$pp$normalize_per_cell(velocity)
   scvelo$pp$log1p(velocity)

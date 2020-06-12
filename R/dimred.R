@@ -74,8 +74,8 @@ embed_velocity_new <- function(
   adata$var_names <- colnames(expression)
   adata$obs_names <- rownames(expression)
 
-  py_assign(adata$layers, "spliced", expression)
-  py_assign(adata$layers, "velo", velo)
+  py_set_item(adata$layers, "spliced", expression)
+  py_set_item(adata$layers, "velo", velo)
 
   # is necessary internally
   adata$uns[["velo_settings"]] <- list(mode = "deterministic")
@@ -84,7 +84,7 @@ embed_velocity_new <- function(
   scvelo$tl$velocity_graph(adata, vkey = "velo")
 
   # assign dimred and embed
-  py_assign(adata$obsm, "X_dimred", dimred)
+  py_set_item(adata$obsm, "X_dimred", dimred)
   scvelo$tl$velocity_embedding(adata, basis = "dimred", vkey = "velo")
 
   dimred_future <- dimred + adata$obsm[["velo_dimred"]]
@@ -100,7 +100,7 @@ embed_velocity_new <- function(
 
 # embed the velocity directly using an scvelo anndata object, instead of recreating one
 embed_velocity_scvelo <- function(adata, dimred) {
-  py_assign(adata$obsm, "X_dimred", dimred)
+  py_set_item(adata$obsm, "X_dimred", dimred)
   scvelo$tl$velocity_embedding(adata, "dimred")
   dimred_future <- dimred + adata$obsm[["velocity_dimred"]]
   dimnames(dimred_future) <- dimnames(dimred)
